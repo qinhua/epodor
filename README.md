@@ -1,20 +1,173 @@
+# Epodor
+
+一个沉浸式的高科技可视化平台，用于学习电子元件，包含 3D 模型、电路仿真和 AI 辅助教学。
+
 <div align="center">
-<img width="1200" height="475" alt="GHBanner" src="https://github.com/user-attachments/assets/0aa67016-6eaf-458a-adb2-6e31a0763ed6" />
+
+![Epodor](https://img.shields.io/badge/Epodor-Electronic%20Learning-blue)
+![React](https://img.shields.io/badge/React-19.2.0-61DAFB?logo=react)
+![TypeScript](https://img.shields.io/badge/TypeScript-5.8-blue?logo=typescript)
+![Three.js](https://img.shields.io/badge/Three.js-0.181.2-000000?logo=three.js)
+
 </div>
 
-# Run and deploy your AI Studio app
+## ✨ 特性
 
-This contains everything you need to run your app locally.
+- 🎯 **3D 可视化** - 使用 Three.js 渲染的交互式 3D 元器件模型
+- 📚 **元器件库** - 收录 18+ 种核心电子元件，包含详细说明和规格
+- 🔍 **智能搜索** - 支持按名称、符号、类型快速查找元器件
+- 🤖 **AI 导师** - 集成 Google Gemini AI，提供智能问答和教学指导
+- 📊 **数据可视化** - 学习进度和技能雷达图展示
+- ⚡ **电路仿真** - 可视化电路搭建和仿真功能
+- 🎨 **现代 UI** - 基于 Tailwind CSS 的现代化界面设计
 
-View your app in AI Studio: https://ai.studio/apps/drive/122VNCGOaHrr2EvUVXnHsS7ZGzdZg2l3a
+## 🚀 快速开始
 
-## Run Locally
+### 环境要求
 
-**Prerequisites:**  Node.js
+- Node.js >= 18.0.0
+- pnpm (推荐) 或 npm
 
+### 安装
 
-1. Install dependencies:
-   `npm install`
-2. Set the `GEMINI_API_KEY` in [.env.local](.env.local) to your Gemini API key
-3. Run the app:
-   `npm run dev`
+1. 克隆项目
+
+```bash
+git clone <repository-url>
+cd epodor
+```
+
+2. 安装依赖
+
+```bash
+pnpm install
+# 或
+npm install
+```
+
+3. 配置环境变量
+
+创建 `.env.local` 文件并添加你的 Gemini API Key：
+
+```env
+VITE_GEMINI_API_KEY=your_api_key_here
+```
+
+4. 启动开发服务器
+
+```bash
+pnpm dev
+# 或
+npm run dev
+```
+
+5. 打开浏览器访问 `http://localhost:5173`
+
+## 📦 构建
+
+```bash
+# 构建生产版本
+pnpm build
+
+# 预览生产构建
+pnpm preview
+```
+
+## 🛠️ 技术栈
+
+- **前端框架**: React 19.2.0
+- **语言**: TypeScript 5.8
+- **构建工具**: Vite 6.2
+- **3D 渲染**: Three.js 0.181.2
+- **路由**: React Router 7.9.6
+- **样式**: Tailwind CSS 4.1.17
+- **动画**: Framer Motion 12.23.24
+- **图表**: Recharts 3.5.1
+- **图标**: Lucide React 0.555.0
+- **AI 服务**: Google Gemini API
+
+## 📁 项目结构
+
+```
+epodor/
+├── src/
+│   ├── components/          # 组件
+│   │   ├── Layout.tsx      # 布局组件
+│   │   └── ThreeViewer.tsx # 3D 查看器
+│   ├── models/             # 模型定义
+│   │   ├── componentModels.ts  # 3D 模型创建逻辑
+│   │   └── componentIcons.tsx # 图标渲染逻辑
+│   ├── pages/              # 页面
+│   │   ├── Dashboard.tsx   # 仪表盘
+│   │   ├── Library.tsx     # 元器件库
+│   │   ├── Detail.tsx      # 详情页
+│   │   └── Simulation.tsx  # 仿真页
+│   ├── services/           # 服务
+│   │   └── geminiService.ts # AI 服务
+│   ├── constants.ts        # 常量数据
+│   ├── types.ts            # 类型定义
+│   └── App.tsx             # 应用入口
+├── public/                 # 静态资源
+└── package.json
+```
+
+## 🎮 功能说明
+
+### 仪表盘 (Dashboard)
+
+- 学习进度统计
+- 技能雷达图
+- 元器件分类统计
+
+### 元器件库 (Library)
+
+- 元器件列表展示
+- 分类筛选
+- 搜索功能
+- 分页浏览
+
+### 详情页 (Detail)
+
+- 3D 模型交互查看
+- 工作原理说明
+- 万用表检测指南
+- AI 智能问答
+
+### 仿真页 (Simulation)
+
+- 电路搭建
+- 可视化仿真
+- 交互式操作
+
+## 🔧 开发
+
+### 添加新元器件
+
+1. 在 `src/constants.ts` 中添加元器件数据
+2. 在 `src/models/componentModels.ts` 中添加 3D 模型
+3. 在 `src/models/componentIcons.tsx` 中添加图标
+
+### 代码规范
+
+项目使用 TypeScript 进行类型检查，建议在提交前运行：
+
+```bash
+# 类型检查
+pnpm type-check
+```
+
+## 📝 许可证
+
+MIT License
+
+## 👥 贡献
+
+欢迎提交 Issue 和 Pull Request！
+
+## 📧 联系方式
+
+如有问题或建议，请通过 Issue 联系我们。
+
+---
+
+Made with ❤️ by Epodor
