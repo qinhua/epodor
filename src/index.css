@@ -1,0 +1,66 @@
+@import "tailwindcss";
+
+@theme {
+  /* 自定义颜色 */
+  --color-background: #020617; /* slate-950 */
+  --color-surface: #0f172a; /* slate-900 */
+  --color-primary: #06b6d4; /* cyan-500 */
+  --color-secondary: #6366f1; /* indigo-500 */
+  --color-accent: #f43f5e; /* rose-500 */
+  --color-text: #f8fafc; /* slate-50 */
+  --color-muted: #94a3b8; /* slate-400 */
+  --color-border: #1e293b; /* slate-800 */
+
+  /* 自定义字体 */
+  --font-family-sans: "Inter", sans-serif;
+  --font-family-mono: "JetBrains Mono", monospace;
+
+  /* 自定义动画 */
+  --animate-pulse-slow: pulse 4s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}
+
+body {
+  background-color: #020617;
+  color: #f8fafc;
+  font-family: "Inter", sans-serif;
+  overflow-x: hidden;
+}
+
+/* Custom Scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: #0f172a;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #334155;
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #475569;
+}
+
+:focus {
+  outline: none;
+}
+
+/* 页面进入动画 */
+@keyframes fade-in {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-fade-in {
+  animation: fade-in 0.4s cubic-bezier(0.22, 1, 0.36, 1);
+}

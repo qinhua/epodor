@@ -1,8 +1,19 @@
 {
   "name": "epodor",
   "private": true,
-  "version": "0.0.0",
+  "version": "1.0.0",
   "type": "module",
+  "author": "Epodor",
+  "license": "MIT",
+  "description": "An immersive, high-tech visualization platform for learning electronic components, featuring 3D models, circuit simulations, and AI-assisted tutoring.",
+  "keywords": [
+    "electronic",
+    "components",
+    "visualization",
+    "simulation",
+    "AI",
+    "tutoring"
+  ],
   "scripts": {
     "dev": "vite",
     "build": "vite build",
@@ -10,12 +21,15 @@
   },
   "dependencies": {
     "@google/genai": "^1.30.0",
-    "react": "^19.2.0",
-    "lucide-react": "^0.555.0",
-    "three": "^0.181.2",
+    "@tailwindcss/vite": "^4.1.17",
     "framer-motion": "^12.23.24",
+    "lucide-react": "^0.555.0",
+    "react": "^19.2.0",
+    "react-dom": "^19.2.0",
+    "react-router-dom": "^7.9.6",
     "recharts": "^3.5.1",
-    "react-dom": "^19.2.0"
+    "tailwindcss": "^4.1.17",
+    "three": "^0.181.2"
   },
   "devDependencies": {
     "@types/node": "^22.14.0",

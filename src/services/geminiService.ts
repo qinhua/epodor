@@ -3,19 +3,22 @@ import { ComponentData } from "../types";
 
 // NOTE: In a real production app, never expose API keys on the client.
 // This is for demonstration within the constraints of the provided environment.
-const apiKey = process.env.API_KEY || ''; 
+const apiKey = process.env.API_KEY || "";
 
 let genAI: GoogleGenAI | null = null;
 
 try {
-    if (apiKey) {
-        genAI = new GoogleGenAI({ apiKey });
-    }
+  if (apiKey) {
+    genAI = new GoogleGenAI({ apiKey });
+  }
 } catch (error) {
-    console.error("Failed to initialize Gemini", error);
+  console.error("Failed to initialize Gemini", error);
 }
 
-export const getAIResponse = async (query: string, componentContext?: ComponentData): Promise<string> => {
+export const getAIResponse = async (
+  query: string,
+  componentContext?: ComponentData
+): Promise<string> => {
   if (!genAI) {
     return "API Key 未配置，请检查环境设置。";
   }
@@ -29,20 +32,24 @@ export const getAIResponse = async (query: string, componentContext?: ComponentD
     2. 回答格式要清晰，可以使用分点陈述。
     3. 语气要专业但亲切，鼓励用户探索。
     
-    ${componentContext ? `用户当前正在学习 ${componentContext.name} (${componentContext.type})。请将你的回答重点集中在这个元件上。` : ''}
+    ${
+      componentContext
+        ? `用户当前正在学习 ${componentContext.name} (${componentContext.type})。请将你的回答重点集中在这个元件上。`
+        : ""
+    }
     
     请始终使用中文回答所有问题，不要使用英文回答，除非解释特定的英文术语。
   `;
 
   try {
-    const model = 'gemini-2.5-flash';
+    const model = "gemini-2.5-flash";
     const response = await genAI.models.generateContent({
       model,
       contents: query,
       config: {
         systemInstruction,
         temperature: 0.7,
-        maxOutputTokens: 1000,
+        maxOutputTokens: 1000
       }
     });
 
