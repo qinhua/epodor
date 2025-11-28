@@ -150,11 +150,11 @@ const Dashboard: React.FC = () => {
                   ))}
                 </Pie>
                 <Tooltip
-                  contentStyle={{
-                    backgroundColor: "#0f172a",
-                    borderColor: "#1e293b",
-                    color: "#fff"
-                  }}
+                // contentStyle={{
+                //   backgroundColor: "#0f172a",
+                //   borderColor: "#1e293b",
+                //   color: "#fff"
+                // }}
                 />
                 <Legend verticalAlign="bottom" height={36} iconType="circle" />
               </PieChart>
