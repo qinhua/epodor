@@ -20,6 +20,15 @@
 - 📊 **数据可视化** - 学习进度和技能雷达图展示
 - ⚡ **电路仿真** - 可视化电路搭建和仿真功能
 - 🎨 **现代 UI** - 基于 Tailwind CSS 的现代化界面设计
+  
+## 项目截图
+
+<div align="center">
+  <img width="300px" src="docs/01.jpg" alt="Epodor 项目截图" />
+  <img width="300px" src="docs/02.jpg" alt="Epodor 项目截图" />
+  <img width="300px" src="docs/03.jpg" alt="Epodor 项目截图" />
+  <img width="300px" src="docs/04.jpg" alt="Epodor 项目截图" />
+</div>
 
 ## 🚀 快速开始
 
