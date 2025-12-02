@@ -10,10 +10,11 @@ import {
   MousePointer2,
   Trash2
 } from "lucide-react";
+import { markCompleted } from "../services/data";
 
 interface Element {
   id: string;
-  type: "battery" | "led" | "resistor" | "switch";
+  type: "battery" | "led" | "resistor" | "switch" | "ground" | "diode" | "voltage" | "button";
   x: number;
   y: number;
   rotation: number; // 0, 90, 180, 270
@@ -36,6 +37,7 @@ const GRID_SIZE = 20 * SCALE; // 40px
 const TERMINAL_OFFSET = GRID_SIZE * 1;
 const HIT_RADIUS = 25 * SCALE;
 const WIRE_HIT_TOLERANCE = 15; // 导线点击容差
+const TERMINAL_SNAP_RADIUS = 12 * SCALE; // 端口吸附半径
 
 // 辅助：获取鼠标在 Canvas 内部的真实坐标
 const getCanvasCoordinates = (
@@ -74,6 +76,29 @@ const getTerminals = (el: Element) => {
   ];
 };
 
+// 查找最近的端口（用于连线吸附）
+const findNearestTerminal = (
+  x: number,
+  y: number,
+  elements: Element[]): { x: number; y: number } | null => {
+  let best: { x: number; y: number } | null = null;
+  let bestDist = Infinity;
+  for (const el of elements) {
+    const [a, b] = getTerminals(el);
+    const da = Math.hypot(a.x - x, a.y - y);
+    const db = Math.hypot(b.x - x, b.y - y);
+    if (da < bestDist && da <= TERMINAL_SNAP_RADIUS) {
+      best = a;
+      bestDist = da;
+    }
+    if (db < bestDist && db <= TERMINAL_SNAP_RADIUS) {
+      best = b;
+      bestDist = db;
+    }
+  }
+  return best;
+};
+
 // 辅助：点到线段的距离（用于选中导线）
 const distToSegment = (
   p: { x: number; y: number },
@@ -105,6 +130,7 @@ const Simulation: React.FC = () => {
   const [mousePos, setMousePos] = useState<{ x: number; y: number } | null>(
     null
   ); // 用于预览
+  const [previewTarget, setPreviewTarget] = useState<{ x: number; y: number } | null>(null); // 端口吸附预览
 
   const [energizedIds, setEnergizedIds] = useState<Set<string>>(new Set());
   const [cursor, setCursor] = useState("default");
@@ -243,6 +269,28 @@ const Simulation: React.FC = () => {
     });
 
     setEnergizedIds(activeSet);
+    // 闭环反馈气泡（简单提示）
+    if (activeSet.size > 0) {
+      const bubble = document.getElementById("sim-bubble");
+      if (bubble) {
+        bubble.textContent = "闭环检测成功";
+        bubble.classList.remove("opacity-0");
+        bubble.classList.add("opacity-100");
+        setTimeout(() => {
+          bubble && bubble.classList.add("opacity-0");
+        }, 1200);
+      }
+    }
+    // 学习成功：若 LED 通电保持 3 秒，记录为完成
+    if (isSimulating) {
+      const ledOn = elements.some((el) => el.type === "led" && activeSet.has(el.id));
+      if (ledOn) {
+        const t = setTimeout(() => {
+          markCompleted("led-001");
+        }, 3000);
+        return () => clearTimeout(t);
+      }
+    }
   }, [elements, wires, isSimulating]);
 
   // --- DRAWING LOGIC ---
@@ -318,9 +366,11 @@ const Simulation: React.FC = () => {
 
     // Preview temp wire (L-Shape Orthogonal)
     if (wireStart && mode === "wire" && mousePos) {
-      // Snap mousePos for preview
-      const snapX = Math.round(mousePos.x / GRID_SIZE) * GRID_SIZE;
-      const snapY = Math.round(mousePos.y / GRID_SIZE) * GRID_SIZE;
+      // 端口吸附或网格吸附
+      const snapTerm = findNearestTerminal(mousePos.x, mousePos.y, elements);
+      const snapX = snapTerm ? snapTerm.x : Math.round(mousePos.x / GRID_SIZE) * GRID_SIZE;
+      const snapY = snapTerm ? snapTerm.y : Math.round(mousePos.y / GRID_SIZE) * GRID_SIZE;
+      setPreviewTarget(snapTerm ?? { x: snapX, y: snapY });
 
       ctx.strokeStyle = "rgba(251, 191, 36, 0.6)"; // Yellow translucent
       ctx.lineWidth = 2;
@@ -347,8 +397,15 @@ const Simulation: React.FC = () => {
       ctx.fill();
       // End Point Target
       ctx.beginPath();
-      ctx.arc(snapX, snapY, 5, 0, Math.PI * 2);
-      ctx.stroke();
+      if (snapTerm) {
+        ctx.fillStyle = "#22c55e";
+        ctx.arc(snapX, snapY, 6, 0, Math.PI * 2);
+        ctx.fill();
+      } else {
+        ctx.strokeStyle = "#fbbf24";
+        ctx.arc(snapX, snapY, 5, 0, Math.PI * 2);
+        ctx.stroke();
+      }
     }
 
     // Elements
@@ -380,6 +437,19 @@ const Simulation: React.FC = () => {
       ctx.beginPath();
       ctx.arc(offset, 0, termRadius, 0, Math.PI * 2);
       ctx.fill();
+      // Hover highlight for wire mode
+      if (mode === "wire" && mousePos) {
+        const [ta, tb] = getTerminals(el);
+        const nearA = Math.hypot(mousePos.x - ta.x, mousePos.y - ta.y) <= TERMINAL_SNAP_RADIUS;
+        const nearB = Math.hypot(mousePos.x - tb.x, mousePos.y - tb.y) <= TERMINAL_SNAP_RADIUS;
+        if (nearA || nearB) {
+          ctx.beginPath();
+          ctx.strokeStyle = "#22c55e";
+          ctx.lineWidth = 2;
+          ctx.arc(nearA ? -offset : offset, 0, termRadius + 2, 0, Math.PI * 2);
+          ctx.stroke();
+        }
+      }
 
       // Component Visuals
       ctx.strokeStyle = "#f8fafc";
@@ -490,6 +560,65 @@ const Simulation: React.FC = () => {
           }
           ctx.stroke();
           break;
+        case "voltage":
+          // Voltage source symbol
+          ctx.beginPath();
+          ctx.moveTo(-offset, 0);
+          ctx.lineTo(-10 * SCALE, 0);
+          ctx.moveTo(10 * SCALE, 0);
+          ctx.lineTo(offset, 0);
+          ctx.stroke();
+          ctx.beginPath();
+          ctx.lineWidth = 4;
+          ctx.moveTo(-8 * SCALE, -12 * SCALE);
+          ctx.lineTo(-8 * SCALE, 12 * SCALE);
+          ctx.stroke();
+          ctx.beginPath();
+          ctx.moveTo(8 * SCALE, -8 * SCALE);
+          ctx.lineTo(8 * SCALE, 8 * SCALE);
+          ctx.stroke();
+          break;
+        case "ground":
+          ctx.beginPath();
+          ctx.moveTo(0, -10 * SCALE);
+          ctx.lineTo(0, 10 * SCALE);
+          ctx.stroke();
+          [12, 16, 20].forEach((dy, i) => {
+            ctx.beginPath();
+            ctx.moveTo(-dy / 2, dy);
+            ctx.lineTo(dy / 2, dy);
+            ctx.stroke();
+          });
+          break;
+        case "diode":
+          // Simple diode symbol
+          ctx.beginPath();
+          ctx.moveTo(-offset, 0);
+          ctx.lineTo(-12 * SCALE, 0);
+          ctx.moveTo(12 * SCALE, 0);
+          ctx.lineTo(offset, 0);
+          ctx.stroke();
+          ctx.beginPath();
+          ctx.moveTo(-8 * SCALE, -8 * SCALE);
+          ctx.lineTo(0, 0);
+          ctx.lineTo(-8 * SCALE, 8 * SCALE);
+          ctx.closePath();
+          ctx.fillStyle = "#0f172a";
+          ctx.fill();
+          ctx.stroke();
+          ctx.beginPath();
+          ctx.moveTo(2 * SCALE, -10 * SCALE);
+          ctx.lineTo(2 * SCALE, 10 * SCALE);
+          ctx.stroke();
+          break;
+        case "button":
+          const btnR = 6 * SCALE;
+          ctx.beginPath();
+          ctx.arc(0, 0, btnR, 0, Math.PI * 2);
+          ctx.fillStyle = "#84cc16";
+          ctx.fill();
+          ctx.stroke();
+          break;
       }
       ctx.restore();
     });
@@ -502,6 +631,7 @@ const Simulation: React.FC = () => {
     mode,
     wireStart,
     mousePos,
+    previewTarget,
     selectedId
   ]);
 
@@ -539,8 +669,9 @@ const Simulation: React.FC = () => {
       setSelectedId(null);
     } else if (mode === "wire") {
       // Snap to grid
-      const snapX = Math.round(x / GRID_SIZE) * GRID_SIZE;
-      const snapY = Math.round(y / GRID_SIZE) * GRID_SIZE;
+      const snapTerm = findNearestTerminal(x, y, elements);
+      const snapX = snapTerm ? snapTerm.x : Math.round(x / GRID_SIZE) * GRID_SIZE;
+      const snapY = snapTerm ? snapTerm.y : Math.round(y / GRID_SIZE) * GRID_SIZE;
 
       if (!wireStart) {
         setWireStart({ x: snapX, y: snapY });
@@ -608,7 +739,8 @@ const Simulation: React.FC = () => {
         elHover || wireHover ? (draggedEl ? "grabbing" : "pointer") : "default"
       );
     } else {
-      setCursor("crosshair");
+      const nearTerm = findNearestTerminal(x, y, elements);
+      setCursor(nearTerm ? "cell" : "crosshair");
     }
 
     // Drag Element
@@ -775,9 +907,7 @@ const Simulation: React.FC = () => {
             isSimulating ? "opacity-50 pointer-events-none" : ""
           }`}
         >
-          <div className="text-[10px] font-bold text-muted uppercase tracking-wider mb-1">
-            电源
-          </div>
+          <div className="text-[10px] font-bold text-muted uppercase tracking-wider mb-1">电源</div>
           <button
             onClick={() => addElement("battery")}
             className="flex items-center gap-3 p-3 bg-slate-800/50 rounded-lg hover:bg-slate-700 hover:border-slate-500 transition-all border border-transparent group"
@@ -785,10 +915,22 @@ const Simulation: React.FC = () => {
             <Battery className="text-yellow-400 group-hover:scale-110 transition-transform" />
             <span className="text-sm font-medium">9V 电池</span>
           </button>
+          <button
+            onClick={() => addElement("voltage")}
+            className="flex items-center gap-3 p-3 bg-slate-800/50 rounded-lg hover:bg-slate-700 hover:border-slate-500 transition-all border border-transparent group"
+          >
+            <Zap className="text-yellow-300 group-hover:scale-110 transition-transform" />
+            <span className="text-sm font-medium">理想电压源</span>
+          </button>
+          <button
+            onClick={() => addElement("ground")}
+            className="flex items-center gap-3 p-3 bg-slate-800/50 rounded-lg hover:bg-slate-700 hover:border-slate-500 transition-all border border-transparent group"
+          >
+            <div className="w-5 h-5 border-b-2 border-slate-300"></div>
+            <span className="text-sm font-medium">地 (GND)</span>
+          </button>
 
-          <div className="text-[10px] font-bold text-muted uppercase tracking-wider mt-2 mb-1">
-            输出器件
-          </div>
+          <div className="text-[10px] font-bold text-muted uppercase tracking-wider mt-2 mb-1">输出器件</div>
           <button
             onClick={() => addElement("led")}
             className="flex items-center gap-3 p-3 bg-slate-800/50 rounded-lg hover:bg-slate-700 hover:border-slate-500 transition-all border border-transparent group"
@@ -796,10 +938,15 @@ const Simulation: React.FC = () => {
             <Lightbulb className="text-rose-400 group-hover:scale-110 transition-transform" />
             <span className="text-sm font-medium">LED (红)</span>
           </button>
+          <button
+            onClick={() => addElement("diode")}
+            className="flex items-center gap-3 p-3 bg-slate-800/50 rounded-lg hover:bg-slate-700 hover:border-slate-500 transition-all border border-transparent group"
+          >
+            <div className="w-4 h-4 border-l-4 border-transparent border-y-4 border-y-slate-300"></div>
+            <span className="text-sm font-medium">二极管</span>
+          </button>
 
-          <div className="text-[10px] font-bold text-muted uppercase tracking-wider mt-2 mb-1">
-            控制与基础
-          </div>
+          <div className="text-[10px] font-bold text-muted uppercase tracking-wider mt-2 mb-1">控制与基础</div>
           <button
             onClick={() => addElement("switch")}
             className="flex items-center gap-3 p-3 bg-slate-800/50 rounded-lg hover:bg-slate-700 hover:border-slate-500 transition-all border border-transparent group"
@@ -813,6 +960,13 @@ const Simulation: React.FC = () => {
           >
             <div className="w-5 h-2 bg-amber-700 rounded-sm group-hover:scale-110 transition-transform"></div>
             <span className="text-sm font-medium">电阻</span>
+          </button>
+          <button
+            onClick={() => addElement("button")}
+            className="flex items-center gap-3 p-3 bg-slate-800/50 rounded-lg hover:bg-slate-700 hover:border-slate-500 transition-all border border-transparent group"
+          >
+            <div className="w-4 h-4 bg-lime-600 rounded-full group-hover:scale-110 transition-transform"></div>
+            <span className="text-sm font-medium">按钮</span>
           </button>
 
           <div className="mt-auto pt-4 border-t border-border">
@@ -863,6 +1017,7 @@ const Simulation: React.FC = () => {
               <ActivityIcon /> 仿真运行中 - 编辑已锁定
             </div>
           )}
+          <div id="sim-bubble" className="absolute bottom-4 right-4 bg-emerald-600/20 text-emerald-300 px-3 py-1.5 rounded-lg text-xs border border-emerald-600/30 backdrop-blur transition-opacity opacity-0"></div>
         </div>
       </div>
     </div>

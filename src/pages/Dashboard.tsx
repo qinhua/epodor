@@ -13,6 +13,9 @@ import {
   Legend
 } from "recharts";
 import { Trophy, Clock, Star, Zap } from "lucide-react";
+import { listAll } from "../services/data";
+import { COMPONENTS } from "../constants";
+import { ComponentCategory } from "../types";
 
 const skillData = [
   { subject: "理论基础", A: 120, fullMark: 150 },
@@ -23,15 +26,31 @@ const skillData = [
   { subject: "焊接工艺", A: 65, fullMark: 150 }
 ];
 
-const categoryData = [
-  { name: "无源元件", value: 8 },
-  { name: "有源元件", value: 7 },
-  { name: "机电/传感器", value: 3 }
-];
+const categoryData = (() => {
+  const records = listAll();
+  const completedIds = new Set(records.filter(r => r.status === "completed").map(r => r.id));
+  const byCat: Record<string, number> = {
+    [ComponentCategory.PASSIVE]: 0,
+    [ComponentCategory.ACTIVE]: 0,
+    [ComponentCategory.ELECTROMECHANICAL]: 0,
+    [ComponentCategory.SOURCE]: 0
+  };
+  for (const c of COMPONENTS) {
+    if (completedIds.has(c.id)) byCat[c.category] = (byCat[c.category] || 0) + 1;
+  }
+  return [
+    { name: ComponentCategory.PASSIVE, value: byCat[ComponentCategory.PASSIVE] },
+    { name: ComponentCategory.ACTIVE, value: byCat[ComponentCategory.ACTIVE] },
+    { name: ComponentCategory.ELECTROMECHANICAL, value: byCat[ComponentCategory.ELECTROMECHANICAL] },
+    { name: ComponentCategory.SOURCE, value: byCat[ComponentCategory.SOURCE] }
+  ];
+})();
 
 const COLORS = ["#06b6d4", "#6366f1", "#f43f5e", "#10b981"];
 
 const Dashboard: React.FC = () => {
+  const records = listAll();
+  const learnedCount = records.filter(r => r.status === "completed").length;
   return (
     <div className="space-y-8 pb-10">
       <div>
@@ -56,7 +75,7 @@ const Dashboard: React.FC = () => {
           },
           {
             title: "已解锁元件",
-            value: "18/25",
+            value: `${learnedCount}/${COMPONENTS.length}`,
             icon: Zap,
             color: "text-emerald-500"
           },

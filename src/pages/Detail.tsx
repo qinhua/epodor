@@ -14,6 +14,7 @@ import {
 } from "lucide-react";
 import { getAIResponse } from "../services/geminiService";
 import { COMPONENTS } from "../constants";
+import { markCompleted, markInProgress, getRecord } from "../services/data";
 
 const Detail: React.FC = () => {
   const { componentId } = useParams<{ componentId: string }>();
@@ -44,6 +45,13 @@ const Detail: React.FC = () => {
     { role: "user" | "model"; text: string }[]
   >([]);
   const [isTyping, setIsTyping] = useState(false);
+  const [checkedSteps, setCheckedSteps] = useState<boolean[]>(
+    new Array(component.multimeterGuide.steps.length).fill(false)
+  );
+
+  React.useEffect(() => {
+    markInProgress(component.id);
+  }, [componentId]);
 
   const handleChat = async () => {
     if (!chatQuery.trim()) return;
@@ -188,14 +196,27 @@ const Detail: React.FC = () => {
                     </h3>
                     <div className="space-y-4">
                       {component.multimeterGuide.steps.map((step, i) => (
-                        <div key={i} className="flex gap-4 group">
+                        <label key={i} className="flex gap-4 group items-start cursor-pointer">
+                          <input
+                            type="checkbox"
+                            className="mt-1 accent-primary"
+                            checked={checkedSteps[i]}
+                            onChange={(e) => {
+                              const next = [...checkedSteps];
+                              next[i] = e.target.checked;
+                              setCheckedSteps(next);
+                              if (next.every(Boolean)) {
+                                markCompleted(component.id);
+                              }
+                            }}
+                          />
                           <div className="flex-shrink-0 w-8 h-8 rounded-full bg-slate-800 border border-slate-700 text-primary flex items-center justify-center font-bold font-mono group-hover:bg-primary group-hover:text-black transition-colors shadow-lg">
                             {i + 1}
                           </div>
-                          <p className="text-slate-300 pt-1 leading-relaxed">
+                          <p className="text-slate-300 pt-1 leading-relaxed flex-1">
                             {step}
                           </p>
-                        </div>
+                        </label>
                       ))}
                     </div>
                   </div>
@@ -215,6 +236,12 @@ const Detail: React.FC = () => {
                       <p className="text-xs text-rose-300 leading-relaxed">
                         测试前请务必断电。测量高压电容（如微波炉电容）前必须先人工短接放电，否则有触电危险！
                       </p>
+                      <div className="mt-4 text-xs text-muted">
+                        当前状态：{(() => {
+                          const r = getRecord(component.id);
+                          return r.status === "completed" ? "已学" : r.status === "in_progress" ? "在学" : "未学";
+                        })()}
+                      </div>
                     </div>
                   </div>
                 </div>

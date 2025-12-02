@@ -1,5 +1,6 @@
 import React from "react";
 import { ComponentType } from "../types";
+import { COMPONENT_SVG } from "../icons/componentSvgs";
 
 interface ComponentIconProps {
   type: ComponentType;
@@ -14,6 +15,12 @@ export const ComponentIcon: React.FC<ComponentIconProps> = ({ type }) => {
   const gloss = (
     <div className="absolute top-0 left-0 right-0 h-1/2 bg-gradient-to-b from-white/20 to-transparent pointer-events-none rounded-t-2xl z-20" />
   );
+
+  const svg = COMPONENT_SVG[type];
+  if (svg) {
+    bgStyle = { background: "radial-gradient(circle at 30% 30%, #0ea5e9, #0c4a6e)" };
+    content = <div className="z-10">{svg}</div>;
+  } else {
 
   switch (type) {
     case ComponentType.RESISTOR:
@@ -202,6 +209,8 @@ export const ComponentIcon: React.FC<ComponentIconProps> = ({ type }) => {
       content = (
         <div className="z-10 w-8 h-8 bg-white/20 rounded shadow-inner" />
       );
+  }
+
   }
 
   return (

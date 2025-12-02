@@ -5,6 +5,7 @@ import Dashboard from "./pages/Dashboard";
 import Library from "./pages/Library";
 import Detail from "./pages/Detail";
 import Simulation from "./pages/Simulation";
+import Auth from "./pages/Auth";
 
 const App: React.FC = () => {
   return (
@@ -16,6 +17,7 @@ const App: React.FC = () => {
           <Route path="/library" element={<Library />} />
           <Route path="/library/:componentId" element={<Detail />} />
           <Route path="/simulation" element={<Simulation />} />
+          <Route path="/auth" element={<Auth />} />
           <Route path="*" element={<Navigate to="/dashboard" replace />} />
         </Routes>
       </Layout>

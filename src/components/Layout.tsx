@@ -10,6 +10,7 @@ import {
   Menu,
   X
 } from "lucide-react";
+import { getCurrentUser } from "../services/auth";
 
 interface LayoutProps {
   children: React.ReactNode;
@@ -29,6 +30,8 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
     { id: "library", label: "元器件库", icon: Library, path: "/library" },
     { id: "simulation", label: "仿真实验室", icon: Zap, path: "/simulation" }
   ];
+
+  const user = getCurrentUser();
 
   return (
     <div className="flex h-screen bg-background text-text overflow-hidden font-sans">
@@ -53,6 +56,16 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
           <div className="flex items-center gap-3 mb-10 text-primary">
             <Cpu size={32} />
             <h1 className="text-2xl font-bold tracking-wider">EPODOR</h1>
+          </div>
+          <div className="flex items-center justify-between mb-4">
+            {user ? (
+              <div className="flex items-center gap-3">
+                <img src={user.avatarUrl} alt="avatar" className="w-8 h-8 rounded-full border border-border" />
+                <span className="text-sm text-white">{user.username}</span>
+              </div>
+            ) : (
+              <NavLink to="/auth" className="text-xs px-2 py-1 bg-primary text-black rounded">登录/注册</NavLink>
+            )}
           </div>
 
           <nav className="flex-1 space-y-2">

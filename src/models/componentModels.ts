@@ -6,36 +6,36 @@ export const createMaterials = () => {
   const matMetal = new THREE.MeshStandardMaterial({
     color: 0xc0c0c0,
     metalness: 0.9,
-    roughness: 0.2
+    roughness: 0.2,
   });
   const matDarkPlastic = new THREE.MeshStandardMaterial({
     color: 0x111111,
     metalness: 0.1,
-    roughness: 0.6
+    roughness: 0.6,
   });
   const matWhitePlastic = new THREE.MeshStandardMaterial({
     color: 0xeeeeee,
-    roughness: 0.5
+    roughness: 0.5,
   });
   const matBlueBody = new THREE.MeshStandardMaterial({
     color: 0x3b82f6,
     metalness: 0.1,
-    roughness: 0.5
+    roughness: 0.5,
   });
   const matResistorBody = new THREE.MeshStandardMaterial({
     color: 0xd2b48c,
-    roughness: 0.4
+    roughness: 0.4,
   });
   const matGlass = new THREE.MeshPhysicalMaterial({
     color: 0xffffff,
     transmission: 0.8,
     opacity: 0.5,
-    roughness: 0.1
+    roughness: 0.1,
   });
   const matCopper = new THREE.MeshStandardMaterial({
     color: 0xb87333,
     metalness: 0.6,
-    roughness: 0.4
+    roughness: 0.4,
   });
 
   return {
@@ -45,7 +45,7 @@ export const createMaterials = () => {
     matBlueBody,
     matResistorBody,
     matGlass,
-    matCopper
+    matCopper,
   };
 };
 
@@ -84,7 +84,7 @@ export const createComponentModel = (type: ComponentType): THREE.Group => {
     matBlueBody,
     matResistorBody,
     matGlass,
-    matCopper
+    matCopper,
   } = materials;
 
   switch (type) {
@@ -135,7 +135,7 @@ export const createComponentModel = (type: ComponentType): THREE.Group => {
         new THREE.MeshPhysicalMaterial({
           color: 0xff0000,
           transmission: 0.6,
-          roughness: 0.1
+          roughness: 0.1,
         })
       );
       const dome = new THREE.Mesh(
@@ -284,7 +284,7 @@ export const createComponentModel = (type: ComponentType): THREE.Group => {
         type === ComponentType.ZENER_DIODE
           ? new THREE.MeshPhysicalMaterial({
               color: 0xff6666,
-              transmission: 0.6
+              transmission: 0.6,
             })
           : matDarkPlastic;
       const body = new THREE.Mesh(
@@ -470,7 +470,7 @@ export const createComponentModel = (type: ComponentType): THREE.Group => {
         new THREE.CylinderGeometry(0.4, 0.4, 1.5, 32),
         new THREE.MeshStandardMaterial({
           color: 0x8b4513,
-          roughness: 0.4
+          roughness: 0.4,
         })
       );
       body.rotation.z = Math.PI / 2;
@@ -530,6 +530,89 @@ export const createComponentModel = (type: ComponentType): THREE.Group => {
       contact2.position.set(0.5, 0.2, -0.3);
       mesh.add(contact2);
       addLeads(mesh, 0.6, 1.0, true, matMetal);
+      break;
+    }
+    case ComponentType.OPAMP: {
+      const body = new THREE.Mesh(
+        new THREE.ConeGeometry(0.9, 1.8, 32),
+        new THREE.MeshStandardMaterial({ color: 0x0ea5e9, roughness: 0.4 })
+      );
+      body.rotation.z = Math.PI;
+      mesh.add(body);
+      addLeads(mesh, 0.6, 1.2, true, matMetal);
+      break;
+    }
+    case ComponentType.VOLTAGE_SOURCE: {
+      const plateLong = new THREE.Mesh(
+        new THREE.BoxGeometry(0.1, 1.2, 0.1),
+        matMetal
+      );
+      plateLong.position.x = -0.4;
+      const plateShort = new THREE.Mesh(
+        new THREE.BoxGeometry(0.1, 0.6, 0.1),
+        matMetal
+      );
+      plateShort.position.x = 0.4;
+      mesh.add(plateLong);
+      mesh.add(plateShort);
+      addLeads(mesh, 0.9, 1.0, false, matMetal);
+      break;
+    }
+    case ComponentType.CURRENT_SOURCE: {
+      const ring = new THREE.Mesh(
+        new THREE.TorusGeometry(0.6, 0.08, 16, 32),
+        matMetal
+      );
+      ring.rotation.x = Math.PI / 2;
+      mesh.add(ring);
+      const arrow = new THREE.Mesh(
+        new THREE.ConeGeometry(0.2, 0.4, 16),
+        matMetal
+      );
+      arrow.position.y = 0.2;
+      mesh.add(arrow);
+      addLeads(mesh, 0.8, 1.0, false, matMetal);
+      break;
+    }
+    case ComponentType.GROUND: {
+      const bar1 = new THREE.Mesh(
+        new THREE.BoxGeometry(0.8, 0.05, 0.1),
+        matMetal
+      );
+      bar1.position.y = -0.2;
+      const bar2 = new THREE.Mesh(
+        new THREE.BoxGeometry(0.6, 0.05, 0.1),
+        matMetal
+      );
+      bar2.position.y = -0.4;
+      const bar3 = new THREE.Mesh(
+        new THREE.BoxGeometry(0.4, 0.05, 0.1),
+        matMetal
+      );
+      bar3.position.y = -0.6;
+      mesh.add(bar1);
+      mesh.add(bar2);
+      mesh.add(bar3);
+      const stem = new THREE.Mesh(
+        new THREE.BoxGeometry(0.05, 0.4, 0.1),
+        matMetal
+      );
+      stem.position.y = -0.05;
+      mesh.add(stem);
+      break;
+    }
+    case ComponentType.BUTTON: {
+      const base = new THREE.Mesh(
+        new THREE.BoxGeometry(1.0, 0.2, 1.0),
+        matMetal
+      );
+      mesh.add(base);
+      const cap = new THREE.Mesh(
+        new THREE.CylinderGeometry(0.35, 0.35, 0.3, 24),
+        matWhitePlastic
+      );
+      cap.position.y = 0.25;
+      mesh.add(cap);
       break;
     }
     default: {

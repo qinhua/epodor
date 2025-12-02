@@ -14,12 +14,12 @@ export const COMPONENTS: ComponentData[] = [
     applications: ["限流保护", "分压电路", "上拉/下拉", "阻抗匹配"],
     multimeterGuide: {
       steps: ["拨至电阻档 (Ω)", "确保电路断电", "表笔接触两端"],
-      expectedReading: "读数接近色环标示值。若为 OL 则开路。"
+      expectedReading: "读数接近色环标示值。若为 OL 则开路。",
     },
     specs: [
       { label: "单位", value: "Ω" },
-      { label: "误差", value: "±5%" }
-    ]
+      { label: "误差", value: "±5%" },
+    ],
   },
   {
     id: "cap-001",
@@ -33,12 +33,12 @@ export const COMPONENTS: ComponentData[] = [
     applications: ["电源滤波", "隔直通交", "储能", "旁路"],
     multimeterGuide: {
       steps: ["先短接放电", "拨至电容档", "红接正黑接负"],
-      expectedReading: "读数接近标称值。电阻档测应先小后大。"
+      expectedReading: "读数接近标称值。电阻档测应先小后大。",
     },
     specs: [
       { label: "单位", value: "F" },
-      { label: "极性", value: "有" }
-    ]
+      { label: "极性", value: "有" },
+    ],
   },
   {
     id: "ind-001",
@@ -52,12 +52,12 @@ export const COMPONENTS: ComponentData[] = [
     applications: ["滤波", "振荡", "升压电路", "扼流"],
     multimeterGuide: {
       steps: ["拨至电阻档", "测量两端阻值"],
-      expectedReading: "很小的电阻值（几欧姆）。若 OL 则断路。"
+      expectedReading: "很小的电阻值（几欧姆）。若 OL 则断路。",
     },
     specs: [
       { label: "单位", value: "H" },
-      { label: "直流电阻", value: "低" }
-    ]
+      { label: "直流电阻", value: "低" },
+    ],
   },
   {
     id: "pot-001",
@@ -70,12 +70,12 @@ export const COMPONENTS: ComponentData[] = [
     applications: ["音量调节", "亮度控制", "传感器"],
     multimeterGuide: {
       steps: ["测两端总阻值", "测中间脚与一端变化"],
-      expectedReading: "总阻值固定，中间脚阻值随旋转平滑变化。"
+      expectedReading: "总阻值固定，中间脚阻值随旋转平滑变化。",
     },
     specs: [
       { label: "阻值", value: "可变" },
-      { label: "线性", value: "线性/对数" }
-    ]
+      { label: "线性", value: "线性/对数" },
+    ],
   },
   {
     id: "var-001",
@@ -89,12 +89,12 @@ export const COMPONENTS: ComponentData[] = [
     applications: ["防雷保护", "过压保护", "吸收尖峰"],
     multimeterGuide: {
       steps: ["电阻档测量两端"],
-      expectedReading: "应为无穷大 (OL)。若有阻值则已损坏。"
+      expectedReading: "应为无穷大 (OL)。若有阻值则已损坏。",
     },
     specs: [
       { label: "压敏电压", value: "470V" },
-      { label: "通流容量", value: "kA级" }
-    ]
+      { label: "通流容量", value: "kA级" },
+    ],
   },
   {
     id: "fuse-001",
@@ -107,12 +107,12 @@ export const COMPONENTS: ComponentData[] = [
     applications: ["电源输入", "电机保护"],
     multimeterGuide: {
       steps: ["蜂鸣档测量"],
-      expectedReading: "导通 (0Ω) 且蜂鸣。OL 为烧断。"
+      expectedReading: "导通 (0Ω) 且蜂鸣。OL 为烧断。",
     },
     specs: [
       { label: "电流", value: "2A" },
-      { label: "电压", value: "250V" }
-    ]
+      { label: "电压", value: "250V" },
+    ],
   },
   {
     id: "xtal-001",
@@ -125,12 +125,12 @@ export const COMPONENTS: ComponentData[] = [
     applications: ["CPU时钟", "RTC", "无线通讯"],
     multimeterGuide: {
       steps: ["万用表无法直接测好坏", "测引脚不应短路"],
-      expectedReading: "需上电用示波器测波形。"
+      expectedReading: "需上电用示波器测波形。",
     },
     specs: [
       { label: "频率", value: "8MHz" },
-      { label: "精度", value: "ppm级" }
-    ]
+      { label: "精度", value: "ppm级" },
+    ],
   },
   {
     id: "trans-001",
@@ -143,12 +143,12 @@ export const COMPONENTS: ComponentData[] = [
     applications: ["电压变换", "隔离", "阻抗匹配"],
     multimeterGuide: {
       steps: ["测各绕组通断", "测绕组间绝缘"],
-      expectedReading: "绕组导通，绕组间无穷大。"
+      expectedReading: "绕组导通，绕组间无穷大。",
     },
     specs: [
       { label: "变比", value: "220:12" },
-      { label: "功率", value: "VA" }
-    ]
+      { label: "功率", value: "VA" },
+    ],
   },
 
   // --- 有源元件 ---
@@ -163,12 +163,12 @@ export const COMPONENTS: ComponentData[] = [
     applications: ["整流", "防反接", "钳位"],
     multimeterGuide: {
       steps: ["二极管档测正反向"],
-      expectedReading: "正向约 0.6V，反向 OL。"
+      expectedReading: "正向约 0.6V，反向 OL。",
     },
     specs: [
       { label: "正向压降", value: "0.7V" },
-      { label: "反向耐压", value: "1000V" }
-    ]
+      { label: "反向耐压", value: "1000V" },
+    ],
   },
   {
     id: "zener-001",
@@ -181,12 +181,12 @@ export const COMPONENTS: ComponentData[] = [
     applications: ["基准电压", "过压保护", "电平转换"],
     multimeterGuide: {
       steps: ["二极管档测正向", "反向也可能有读数(视稳压值)"],
-      expectedReading: "正向约 0.7V。"
+      expectedReading: "正向约 0.7V。",
     },
     specs: [
       { label: "稳压值", value: "5.1V" },
-      { label: "功率", value: "1W" }
-    ]
+      { label: "功率", value: "1W" },
+    ],
   },
   {
     id: "led-001",
@@ -199,12 +199,12 @@ export const COMPONENTS: ComponentData[] = [
     applications: ["指示", "照明", "显示"],
     multimeterGuide: {
       steps: ["二极管档，长脚接红"],
-      expectedReading: "微亮，显示压降(1.8-3V)。"
+      expectedReading: "微亮，显示压降(1.8-3V)。",
     },
     specs: [
       { label: "颜色", value: "红/绿/蓝" },
-      { label: "电流", value: "20mA" }
-    ]
+      { label: "电流", value: "20mA" },
+    ],
   },
   {
     id: "bjt-001",
@@ -217,12 +217,12 @@ export const COMPONENTS: ComponentData[] = [
     applications: ["放大", "开关", "振荡"],
     multimeterGuide: {
       steps: ["二极管档测 BE, BC 结"],
-      expectedReading: "BE, BC 导通，CE 不通。"
+      expectedReading: "BE, BC 导通，CE 不通。",
     },
     specs: [
       { label: "Hfe", value: "100-300" },
-      { label: "Vceo", value: "45V" }
-    ]
+      { label: "Vceo", value: "45V" },
+    ],
   },
   {
     id: "mos-001",
@@ -235,12 +235,12 @@ export const COMPONENTS: ComponentData[] = [
     applications: ["高速开关", "电源管理", "电机驱动"],
     multimeterGuide: {
       steps: ["二极管档测 DS (体二极管)", "触发 G 极看 DS 是否导通"],
-      expectedReading: "DS 正向有压降。G 极充上电后 DS 导通 (0Ω)。"
+      expectedReading: "DS 正向有压降。G 极充上电后 DS 导通 (0Ω)。",
     },
     specs: [
       { label: "Vds", value: "60V" },
-      { label: "Rds(on)", value: "10mΩ" }
-    ]
+      { label: "Rds(on)", value: "10mΩ" },
+    ],
   },
   {
     id: "ic-001",
@@ -253,12 +253,12 @@ export const COMPONENTS: ComponentData[] = [
     applications: ["定时", "PWM", "脉冲发生"],
     multimeterGuide: {
       steps: ["测电源对地阻值"],
-      expectedReading: "非短路。具体功能需上电测试。"
+      expectedReading: "非短路。具体功能需上电测试。",
     },
     specs: [
       { label: "封装", value: "DIP-8" },
-      { label: "电压", value: "5-15V" }
-    ]
+      { label: "电压", value: "5-15V" },
+    ],
   },
   {
     id: "opto-001",
@@ -271,12 +271,12 @@ export const COMPONENTS: ComponentData[] = [
     applications: ["反馈电路", "隔离控制", "电平转换"],
     multimeterGuide: {
       steps: ["测输入端 LED", "测输出端三极管"],
-      expectedReading: "输入端像二极管。输出端无光时不通。"
+      expectedReading: "输入端像二极管。输出端无光时不通。",
     },
     specs: [
       { label: "隔离电压", value: "5000V" },
-      { label: "CTR", value: "50%" }
-    ]
+      { label: "CTR", value: "50%" },
+    ],
   },
 
   // --- 机电/传感器 ---
@@ -291,12 +291,12 @@ export const COMPONENTS: ComponentData[] = [
     applications: ["家电控制", "工业控制"],
     multimeterGuide: {
       steps: ["测线圈阻值", "测触点通断"],
-      expectedReading: "线圈有阻值。常闭通，常开断。"
+      expectedReading: "线圈有阻值。常闭通，常开断。",
     },
     specs: [
       { label: "线圈", value: "12VDC" },
-      { label: "负载", value: "10A 250V" }
-    ]
+      { label: "负载", value: "10A 250V" },
+    ],
   },
   {
     id: "spk-001",
@@ -309,12 +309,12 @@ export const COMPONENTS: ComponentData[] = [
     applications: ["报警", "按键音", "音乐"],
     multimeterGuide: {
       steps: ["电阻档测线圈"],
-      expectedReading: "有一定阻值（电磁式）。"
+      expectedReading: "有一定阻值（电磁式）。",
     },
     specs: [
       { label: "类型", value: "有源/无源" },
-      { label: "电压", value: "5V" }
-    ]
+      { label: "电压", value: "5V" },
+    ],
   },
   {
     id: "sw-001",
@@ -327,11 +327,105 @@ export const COMPONENTS: ComponentData[] = [
     applications: ["人机交互", "复位", "控制"],
     multimeterGuide: {
       steps: ["蜂鸣档，按下开关"],
-      expectedReading: "按下响，松开不响。"
+      expectedReading: "按下响，松开不响。",
     },
     specs: [
       { label: "寿命", value: "10万次" },
-      { label: "行程", value: "0.25mm" }
-    ]
-  }
+      { label: "行程", value: "0.25mm" },
+    ],
+  },
+  // --- 电源/参考 ---
+  {
+    id: "vsrc-001",
+    name: "直流电压源",
+    type: ComponentType.VOLTAGE_SOURCE,
+    category: ComponentCategory.SOURCE,
+    description: "提供稳定直流电压的理想电源模型，用于驱动与测试。",
+    symbol: "V",
+    workingPrinciple:
+      "理想电压源无论负载如何都保持端口电压恒定。实际电源存在内阻与纹波。",
+    applications: ["供电", "基准电压", "测试激励"],
+    multimeterGuide: {
+      steps: ["电压档", "红表笔接正端，黑表笔接负端"],
+      expectedReading: "读数稳定在设定电压值。",
+    },
+    specs: [
+      { label: "电压", value: "5V/9V/12V" },
+      { label: "纹波", value: "理想为 0" },
+    ],
+  },
+  {
+    id: "isrc-001",
+    name: "理想电流源",
+    type: ComponentType.CURRENT_SOURCE,
+    category: ComponentCategory.SOURCE,
+    description: "输出恒定电流的源模型，适用于恒流驱动与测试。",
+    symbol: "I",
+    workingPrinciple:
+      "理想电流源在一定范围内维持回路电流为设定值。实际受合规电压限制。",
+    applications: ["LED 恒流驱动", "传感器偏置", "测试激励"],
+    multimeterGuide: {
+      steps: ["串联在回路中，电流档测量"],
+      expectedReading: "接近设定电流值。",
+    },
+    specs: [
+      { label: "电流", value: "20mA/100mA" },
+      { label: "合规电压", value: "受负载影响" },
+    ],
+  },
+  {
+    id: "gnd-001",
+    name: "地参考 (GND)",
+    type: ComponentType.GROUND,
+    category: ComponentCategory.SOURCE,
+    description: "电路的电位参考点，通常为 0V。",
+    symbol: "⏚",
+    workingPrinciple: "作为所有电压测量的参考点；单点/多点接地影响噪声与环路。",
+    applications: ["电位参考", "屏蔽", "安全保护"],
+    multimeterGuide: {
+      steps: ["黑表笔接地，红表笔测量各节点"],
+      expectedReading: "读数为相对地的电压。",
+    },
+    specs: [
+      { label: "电位", value: "0V" },
+      { label: "类型", value: "模拟地/数字地/机壳地" },
+    ],
+  },
+  {
+    id: "opamp-001",
+    name: "运算放大器 (OPAMP)",
+    type: ComponentType.OPAMP,
+    category: ComponentCategory.ACTIVE,
+    description: "高增益差分放大器，常用于滤波、比较与信号调理。",
+    symbol: "U",
+    workingPrinciple:
+      "理想条件下 Vo = A*(V+ - V-)，通过负反馈实现稳定工作点与期望增益。",
+    applications: ["放大器", "比较器", "滤波器", "缓冲器"],
+    multimeterGuide: {
+      steps: ["测电源引脚", "测输出是否饱和"],
+      expectedReading: "电源正常，输出随输入变化且不饱和。",
+    },
+    specs: [
+      { label: "供电", value: "+/-12V 或 5V" },
+      { label: "增益", value: "理想无穷大" },
+    ],
+  },
+  {
+    id: "btn-001",
+    name: "按钮开关",
+    type: ComponentType.BUTTON,
+    category: ComponentCategory.ELECTROMECHANICAL,
+    description: "按下导通、松开断开的瞬时按钮，用于人机交互。",
+    symbol: "S",
+    workingPrinciple: "机械触点按压接通，松开断开。",
+    applications: ["复位", "触发", "菜单输入"],
+    multimeterGuide: {
+      steps: ["蜂鸣档，按下测试"],
+      expectedReading: "按下导通，松开断开。",
+    },
+    specs: [
+      { label: "寿命", value: "10万次" },
+      { label: "触点", value: "常开" },
+    ],
+  },
 ];

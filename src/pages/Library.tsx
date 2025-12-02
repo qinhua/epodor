@@ -5,6 +5,7 @@ import { COMPONENTS } from "../constants";
 import { Search, Filter, ChevronLeft, ChevronRight } from "lucide-react";
 import { ComponentCategory } from "../types";
 import { ComponentIcon } from "../models/componentIcons";
+import { getRecord } from "../services/data";
 
 const ITEMS_PER_PAGE = 9;
 
@@ -133,6 +134,16 @@ const Library: React.FC = () => {
                     <span className="inline-block px-1.5 py-0.5 bg-slate-800 rounded text-[10px] text-muted border border-slate-700">
                       {comp.category}
                     </span>
+                    {(() => {
+                      const rec = getRecord(comp.id);
+                      const label = rec.status === "completed" ? "已学" : rec.status === "in_progress" ? "在学" : "未学";
+                      const color = rec.status === "completed" ? "bg-emerald-500/20 text-emerald-400 border-emerald-500/30" : rec.status === "in_progress" ? "bg-yellow-500/20 text-yellow-400 border-yellow-500/30" : "bg-slate-700 text-muted border-slate-600";
+                      return (
+                        <span className={`inline-block px-1.5 py-0.5 rounded text-[10px] border ${color}`}>
+                          {label}{rec.count ? ` ×${rec.count}` : ""}
+                        </span>
+                      );
+                    })()}
                   </div>
                 </div>
                 <h3 className="text-lg font-bold text-white mb-1 leading-tight truncate">
